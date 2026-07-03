@@ -1,5 +1,5 @@
 server:
-  port: 6704
+  port: 6703
 
 spring:
   application:
@@ -22,9 +22,9 @@ spring:
 
 clients:
   user-service:
-    url: ${USER_SERVICE_URL:http://localhost:6701}
+    url: ${USER_SERVICE_URL:http://localhost:6700}
   group-service:
-    url: ${GROUP_SERVICE_URL:http://localhost:6702}
+    url: ${GROUP_SERVICE_URL:http://localhost:6701}
   internal-api-key: ${INTERNAL_API_KEY:local-development-internal-key}
 
 security:

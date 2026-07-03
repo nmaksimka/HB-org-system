@@ -32,25 +32,25 @@
 
 ```text
 Client
-  -> apiGateway :6767
-      -> userService :6701
+  -> apiGateway :1488
+      -> userService :6700
           -> user_db :5432 (host :5334)
-      -> groupService :6702
+      -> groupService :6701
           -> group_db :5432 (host :5336)
           -> userService internal API
-      -> giftService :6703
+      -> giftService :6702
           -> gift_db :5432 (host :5337)
           -> userService internal API
           -> Kafka via transactional outbox
-      -> subscriptionService :6704
+      -> subscriptionService :6703
           -> subscription_db :5432 (host :5338)
           -> userService/groupService internal API
           -> Kafka via transactional outbox
-      -> notificationService :6705
+      -> notificationService :6704
           -> notification_db :5432 (host :5339)
           <- Kafka events
           -> /user/queue/notifications
-      -> chatService :6706
+      -> chatService :6705
           -> chat_db :5432 (host :5340)
           -> /topic/chats/{roomId}
 ```

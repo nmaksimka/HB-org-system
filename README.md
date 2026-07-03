@@ -45,13 +45,13 @@ gradlew.bat clean test bootJar
 docker compose up --build
 ```
 
-Gateway: `http://localhost:6767`. Swagger user service:
-`http://localhost:6701/swagger-ui.html`; group service:
-`http://localhost:6702/swagger-ui.html`; gift service:
-`http://localhost:6703/swagger-ui.html`; subscription service:
-`http://localhost:6704/swagger-ui.html`; notification service:
-`http://localhost:6705/swagger-ui.html`; chat service:
-`http://localhost:6706/swagger-ui.html`.
+Gateway: `http://localhost:1488`. Swagger user service:
+`http://localhost:6700/swagger-ui.html`; group service:
+`http://localhost:6701/swagger-ui.html`; gift service:
+`http://localhost:6702/swagger-ui.html`; subscription service:
+`http://localhost:6703/swagger-ui.html`; notification service:
+`http://localhost:6704/swagger-ui.html`; chat service:
+`http://localhost:6705/swagger-ui.html`.
 
 ## Примеры
 

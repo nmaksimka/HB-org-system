@@ -36,14 +36,14 @@ endpoint, Docker Compose не сломан, документация обнов�
 
 ## Порты сервисов
 
-- API Gateway: `6767`.
-- userService: `6701`.
-- groupService: `6702`.
-- giftService: `6703`.
-- subscriptionService: `6704`.
-- notificationService: `6705`.
-- chatService: `6706`.
-- fundraiserService: `6707`.
-- mockBankService: `6708`.
-- calendarService: `6709`.
-- adminService: `6710`.
+- API Gateway: `1488`.
+- userService: `6700`.
+- groupService: `6701`.
+- giftService: `6702`.
+- subscriptionService: `6703`.
+- notificationService: `6704`.
+- chatService: `6705`.
+- fundraiserService: `6706`.
+- mockBankService: `6707`.
+- calendarService: `6708`.
+- adminService: `6709`.

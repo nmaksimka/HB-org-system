@@ -187,12 +187,12 @@ services:
       JWT_ACCESS_TOKEN_TTL: ${JWT_ACCESS_TOKEN_TTL:-3600}
       INTERNAL_API_KEY: ${INTERNAL_API_KEY:-local-development-internal-key}
     ports:
-      - "6701:6701"
+      - "6700:6700"
     depends_on:
       postgres-user:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6701'"]
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6700'"]
       interval: 5s
       timeout: 3s
       retries: 15
@@ -206,18 +206,18 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-group:5432/group_db
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-birthday}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
-      USER_SERVICE_URL: http://user-service:6701
+      USER_SERVICE_URL: http://user-service:6700
       INTERNAL_API_KEY: ${INTERNAL_API_KEY:-local-development-internal-key}
       GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
     ports:
-      - "6702:6702"
+      - "6701:6701"
     depends_on:
       postgres-group:
         condition: service_healthy
       user-service:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6702'"]
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6701'"]
       interval: 5s
       timeout: 3s
       retries: 15
@@ -231,12 +231,12 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-gift:5432/gift_db
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-birthday}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
-      USER_SERVICE_URL: http://user-service:6701
+      USER_SERVICE_URL: http://user-service:6700
       INTERNAL_API_KEY: ${INTERNAL_API_KEY:-local-development-internal-key}
       GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
-      - "6703:6703"
+      - "6702:6702"
     depends_on:
       postgres-gift:
         condition: service_healthy
@@ -245,7 +245,7 @@ services:
       kafka:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6703'"]
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6702'"]
       interval: 5s
       timeout: 3s
       retries: 15
@@ -259,13 +259,13 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-subscription:5432/subscription_db
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-birthday}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
-      USER_SERVICE_URL: http://user-service:6701
-      GROUP_SERVICE_URL: http://group-service:6702
+      USER_SERVICE_URL: http://user-service:6700
+      GROUP_SERVICE_URL: http://group-service:6701
       INTERNAL_API_KEY: ${INTERNAL_API_KEY:-local-development-internal-key}
       GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
-      - "6704:6704"
+      - "6703:6703"
     depends_on:
       postgres-subscription:
         condition: service_healthy
@@ -276,7 +276,7 @@ services:
       kafka:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6704'"]
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6703'"]
       interval: 5s
       timeout: 3s
       retries: 15
@@ -294,14 +294,14 @@ services:
       JWT_SECRET: ${JWT_SECRET:-change-this-development-secret-to-at-least-32-bytes}
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
-      - "6705:6705"
+      - "6704:6704"
     depends_on:
       postgres-notification:
         condition: service_healthy
       kafka:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6705'"]
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6704'"]
       interval: 5s
       timeout: 3s
       retries: 15
@@ -315,13 +315,13 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-chat:5432/chat_db
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-birthday}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
-      USER_SERVICE_URL: http://user-service:6701
+      USER_SERVICE_URL: http://user-service:6700
       INTERNAL_API_KEY: ${INTERNAL_API_KEY:-local-development-internal-key}
       GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
       JWT_SECRET: ${JWT_SECRET:-change-this-development-secret-to-at-least-32-bytes}
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
-      - "6706:6706"
+      - "6705:6705"
     depends_on:
       postgres-chat:
         condition: service_healthy
@@ -330,7 +330,7 @@ services:
       kafka:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6706'"]
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6705'"]
       interval: 5s
       timeout: 3s
       retries: 15
@@ -348,14 +348,14 @@ services:
       GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
-      - "6708:6708"
+      - "6707:6707"
     depends_on:
       postgres-mock-bank:
         condition: service_healthy
       kafka:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6708'"]
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6707'"]
       interval: 5s
       timeout: 3s
       retries: 15
@@ -369,14 +369,14 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-fundraiser:5432/fundraiser_db
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-birthday}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
-      USER_SERVICE_URL: http://user-service:6701
-      GIFT_SERVICE_URL: http://gift-service:6703
-      MOCK_BANK_SERVICE_URL: http://mock-bank-service:6708
+      USER_SERVICE_URL: http://user-service:6700
+      GIFT_SERVICE_URL: http://gift-service:6702
+      MOCK_BANK_SERVICE_URL: http://mock-bank-service:6707
       INTERNAL_API_KEY: ${INTERNAL_API_KEY:-local-development-internal-key}
       GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
-      - "6707:6707"
+      - "6706:6706"
     depends_on:
       postgres-fundraiser:
         condition: service_healthy
@@ -389,7 +389,7 @@ services:
       kafka:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6707'"]
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6706'"]
       interval: 5s
       timeout: 3s
       retries: 15
@@ -407,14 +407,14 @@ services:
       CALENDAR_ENCRYPTION_KEY: ${CALENDAR_ENCRYPTION_KEY:-local-development-calendar-key-change-me}
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
-      - "6709:6709"
+      - "6708:6708"
     depends_on:
       postgres-calendar:
         condition: service_healthy
       kafka:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6709'"]
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6708'"]
       interval: 5s
       timeout: 3s
       retries: 15
@@ -428,12 +428,12 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-admin:5432/admin_db
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-birthday}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
-      USER_SERVICE_URL: http://user-service:6701
+      USER_SERVICE_URL: http://user-service:6700
       INTERNAL_API_KEY: ${INTERNAL_API_KEY:-local-development-internal-key}
       GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
-      - "6710:6710"
+      - "6709:6709"
     depends_on:
       postgres-admin:
         condition: service_healthy
@@ -442,7 +442,7 @@ services:
       kafka:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6710'"]
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6709'"]
       interval: 5s
       timeout: 3s
       retries: 15
@@ -453,22 +453,22 @@ services:
       context: .
       dockerfile: apiGateway/Dockerfile
     environment:
-      USER_SERVICE_URL: http://user-service:6701
-      GROUP_SERVICE_URL: http://group-service:6702
-      GIFT_SERVICE_URL: http://gift-service:6703
-      SUBSCRIPTION_SERVICE_URL: http://subscription-service:6704
-      NOTIFICATION_SERVICE_URL: http://notification-service:6705
-      NOTIFICATION_WS_URL: ws://notification-service:6705
-      CHAT_SERVICE_URL: http://chat-service:6706
-      CHAT_WS_URL: ws://chat-service:6706
-      MOCK_BANK_SERVICE_URL: http://mock-bank-service:6708
-      FUNDRAISER_SERVICE_URL: http://fundraiser-service:6707
-      CALENDAR_SERVICE_URL: http://calendar-service:6709
-      ADMIN_SERVICE_URL: http://admin-service:6710
+      USER_SERVICE_URL: http://user-service:6700
+      GROUP_SERVICE_URL: http://group-service:6701
+      GIFT_SERVICE_URL: http://gift-service:6702
+      SUBSCRIPTION_SERVICE_URL: http://subscription-service:6703
+      NOTIFICATION_SERVICE_URL: http://notification-service:6704
+      NOTIFICATION_WS_URL: ws://notification-service:6704
+      CHAT_SERVICE_URL: http://chat-service:6705
+      CHAT_WS_URL: ws://chat-service:6705
+      MOCK_BANK_SERVICE_URL: http://mock-bank-service:6707
+      FUNDRAISER_SERVICE_URL: http://fundraiser-service:6706
+      CALENDAR_SERVICE_URL: http://calendar-service:6708
+      ADMIN_SERVICE_URL: http://admin-service:6709
       JWT_SECRET: ${JWT_SECRET:-change-this-development-secret-to-at-least-32-bytes}
       GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
     ports:
-      - "6767:6767"
+      - "1488:1488"
     depends_on:
       user-service:
         condition: service_healthy

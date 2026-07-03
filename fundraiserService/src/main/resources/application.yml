@@ -1,5 +1,5 @@
 server:
-  port: 6707
+  port: 6706
 
 spring:
   application:
@@ -28,11 +28,11 @@ spring:
 clients:
   internal-api-key: ${INTERNAL_API_KEY:local-development-internal-key}
   user-service:
-    url: ${USER_SERVICE_URL:http://localhost:6701}
+    url: ${USER_SERVICE_URL:http://localhost:6700}
   gift-service:
-    url: ${GIFT_SERVICE_URL:http://localhost:6703}
+    url: ${GIFT_SERVICE_URL:http://localhost:6702}
   mock-bank-service:
-    url: ${MOCK_BANK_SERVICE_URL:http://localhost:6708}
+    url: ${MOCK_BANK_SERVICE_URL:http://localhost:6707}
 
 security:
   gateway-secret: ${GATEWAY_INTERNAL_SECRET:local-development-gateway-secret}

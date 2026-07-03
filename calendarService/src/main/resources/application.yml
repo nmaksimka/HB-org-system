@@ -1,5 +1,5 @@
 server:
-  port: 6709
+  port: 6708
 spring:
   application:
     name: calendar-service

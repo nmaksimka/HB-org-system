@@ -1,6 +1,6 @@
 # API первого вертикального среза
 
-Внешний base URL: `http://localhost:6767`.
+Внешний base URL: `http://localhost:1488`.
 
 | Метод | Endpoint | Доступ |
 |---|---|---|
