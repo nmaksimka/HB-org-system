@@ -26,7 +26,7 @@
 ответ нужен в текущем запросе. Изменения, уведомления, аудит и фоновые
 действия передаются Kafka events.
 
-## Первый вертикальный срез
+## Реализованная система
 
 Текущая версия реализует:
 
@@ -53,6 +53,21 @@ Client
       -> chatService :6706
           -> chat_db :5432 (host :5340)
           -> /topic/chats/{roomId}
+      -> fundraiserService :6707
+          -> fundraiser_db :5432 (host :5341)
+          -> userService/giftService/mockBankService internal API
+          <- payment.succeeded
+      -> mockBankService :6708
+          -> mock_bank_db :5432 (host :5342)
+          -> Kafka via transactional outbox
+      -> calendarService :6709
+          -> calendar_db :5432 (host :5343)
+          -> Kafka via transactional outbox
+      -> adminService :6710
+          -> admin_db :5432 (host :5344)
+          <- Kafka domain events
+
+Browser -> webApp :5173 -> apiGateway :6767
 ```
 
 Gateway:
@@ -110,6 +125,25 @@ Gateway:
 - запрещает имениннику доступ к обсуждению о нём;
 - сохраняет сообщение до WebSocket/Kafka-публикации.
 
+`fundraiserService` и `mockBankService`:
+
+- не образуют циклическую синхронную зависимость;
+- создают платёжную коллекцию через internal Feign API;
+- передают факт оплаты событием `PaymentSucceededEvent`;
+- идемпотентно обновляют собранную сумму и завершают сбор.
+
+`calendarService`:
+
+- хранит токены календарей только после AES-GCM шифрования;
+- не возвращает токены через API;
+- публикует факты подключения и изменения событий через outbox.
+
+`adminService`:
+
+- требует роль `ADMIN` из проверенных Gateway headers;
+- блокирует пользователя только через internal API `userService`;
+- идемпотентно сохраняет доменные Kafka events в audit log.
+
 ## Решения по исходной схеме
 
 1. PostgreSQL enum заменены на `VARCHAR + CHECK`. Это упрощает JPA mapping и
@@ -120,11 +154,5 @@ Gateway:
 5. Межсервисные FK исключаются; согласованность обеспечивается API,
    событиями, идемпотентными consumers и, на следующих этапах, outbox.
 
-## Порядок дальнейшей реализации
-
-1. groupService и giftService.
-2. subscriptionService и notificationService + Kafka/outbox.
-3. chatService + WebSocket и проверка запрета доступа именинника.
-4. fundraiserService + mockBankService.
-5. calendarService и adminService.
-6. React frontend после стабилизации MVP API.
+Все бизнес-сервисы из целевой схемы реализованы. Каждый сервис владеет
+собственной БД, а web-приложение общается только с API Gateway.
