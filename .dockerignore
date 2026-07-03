@@ -3,3 +3,5 @@
 .git
 .env
 .codex-docx-review
+webApp/node_modules
+webApp/dist

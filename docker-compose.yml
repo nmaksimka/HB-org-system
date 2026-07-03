@@ -491,6 +491,16 @@ services:
       admin-service:
         condition: service_healthy
 
+  web-app:
+    build:
+      context: .
+      dockerfile: webApp/Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      api-gateway:
+        condition: service_started
+
 volumes:
   user-db-data:
   group-db-data:

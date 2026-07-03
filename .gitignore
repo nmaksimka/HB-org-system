@@ -9,3 +9,5 @@ out/
 codex/
 .agents/
 agents/
+**/node_modules/
+**/dist/
