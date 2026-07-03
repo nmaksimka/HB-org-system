@@ -9,4 +9,9 @@ out/
 codex/
 .agents/
 agents/
+<<<<<<< HEAD
 webApp/
+=======
+**/node_modules/
+**/dist/
+>>>>>>> dfed975d8786461dcbd44500f4cc16b0ef7f6ef0
