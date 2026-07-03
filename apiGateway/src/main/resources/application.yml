@@ -31,6 +31,14 @@ spring:
           uri: ${NOTIFICATION_SERVICE_URL:http://localhost:6705}
           predicates:
             - Path=/api/v1/notifications/**
+        - id: chat-websocket
+          uri: ${CHAT_WS_URL:ws://localhost:6706}
+          predicates:
+            - Path=/ws/chats/**
+        - id: chat-service
+          uri: ${CHAT_SERVICE_URL:http://localhost:6706}
+          predicates:
+            - Path=/api/v1/chats/**
       globalcors:
         cors-configurations:
           '[/**]':

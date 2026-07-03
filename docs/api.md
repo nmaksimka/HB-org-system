@@ -29,9 +29,17 @@
 | GET | `/api/v1/notifications` | JWT |
 | PATCH | `/api/v1/notifications/{notificationId}/read` | JWT, владелец |
 | PATCH | `/api/v1/notifications/read-all` | JWT |
+| POST | `/api/v1/chats/birthday/{targetUserId}` | JWT |
+| POST | `/api/v1/chats/{roomId}/join` | JWT, не именинник |
+| GET | `/api/v1/chats/me` | JWT |
+| GET | `/api/v1/chats/{roomId}/messages` | JWT, участник |
+| POST | `/api/v1/chats/{roomId}/messages` | JWT, участник |
 
 WebSocket endpoint: `/ws/notifications`; персональная очередь:
 `/user/queue/notifications`.
+
+Chat WebSocket: `/ws/chats`, topic `/topic/chats/{roomId}`,
+send destination `/app/chats/{roomId}/send`.
 
 Internal endpoint `GET /internal/users/{userId}` не маршрутизируется через
 Gateway и требует `X-Internal-Api-Key`.

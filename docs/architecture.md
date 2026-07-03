@@ -50,6 +50,9 @@ Client
           -> notification_db :5432 (host :5339)
           <- Kafka events
           -> /user/queue/notifications
+      -> chatService :6706
+          -> chat_db :5432 (host :5340)
+          -> /topic/chats/{roomId}
 ```
 
 Gateway:
@@ -99,6 +102,13 @@ Gateway:
 - сначала сохраняет уведомление, затем отправляет его через WebSocket;
 - предоставляет read/unread API только владельцу уведомлений;
 - хранит журнал попыток WebSocket-доставки.
+
+`chatService`:
+
+- проверяет участие при REST, STOMP SUBSCRIBE и отправке сообщения;
+- никогда не берёт `senderId` из body;
+- запрещает имениннику доступ к обсуждению о нём;
+- сохраняет сообщение до WebSocket/Kafka-публикации.
 
 ## Решения по исходной схеме
 

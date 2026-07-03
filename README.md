@@ -27,8 +27,11 @@
 - `notificationService`: Kafka consumers, read/unread API и WebSocket;
 - идемпотентность по `sourceEventId` и отдельная `notification_db`;
 - scheduler пользовательских birthday reminders.
+- `chatService`: закрытые birthday-чаты, участники и история сообщений;
+- JWT/STOMP WebSocket и публикация сообщения только после сохранения;
+- запрет доступа именинника и отдельная `chat_db`.
 
-Следующий вертикальный срез: `chatService`.
+Следующие этапы: `fundraiserService` и `mockBankService`.
 
 ## Быстрый запуск
 
@@ -43,7 +46,8 @@ Gateway: `http://localhost:6767`. Swagger user service:
 `http://localhost:6702/swagger-ui.html`; gift service:
 `http://localhost:6703/swagger-ui.html`; subscription service:
 `http://localhost:6704/swagger-ui.html`; notification service:
-`http://localhost:6705/swagger-ui.html`.
+`http://localhost:6705/swagger-ui.html`; chat service:
+`http://localhost:6706/swagger-ui.html`.
 
 ## Примеры
 
