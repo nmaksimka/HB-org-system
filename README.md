@@ -21,21 +21,26 @@ MapStruct: entity используют Lombok, преобразования DTO 
 - Swagger/OpenAPI;
 - отдельные `user_db` и `group_db`;
 - Docker healthchecks и упорядоченный запуск сервисов;
-- unit tests для auth и групповых бизнес-правил.
+- unit tests для auth и групповых бизнес-правил;
 - `giftService`: wishlist CRUD, видимость, бронирование и Kafka outbox;
 - запрет редактирования чужого и бронирования собственного подарка;
-- отдельная `gift_db`.
+- отдельная `gift_db`;
 - `subscriptionService`: подписки на пользователей и группы;
 - запрет подписки на себя и активных дублей;
-- отдельная `subscription_db` и Kafka outbox.
+- отдельная `subscription_db` и Kafka outbox;
 - `notificationService`: Kafka consumers, read/unread API и WebSocket;
 - идемпотентность по `sourceEventId` и отдельная `notification_db`;
-- scheduler пользовательских birthday reminders.
+- scheduler пользовательских birthday reminders;
 - `chatService`: закрытые birthday-чаты, участники и история сообщений;
 - JWT/STOMP WebSocket и публикация сообщения только после сохранения;
-- запрет доступа именинника и отдельная `chat_db`.
-
-Следующие этапы: `fundraiserService` и `mockBankService`.
+- запрет доступа именинника и отдельная `chat_db`;
+- `fundraiserService`: сборы, участники, суммы и идемпотентная обработка оплат;
+- `mockBankService`: мок-коллекции, идемпотентные платежи и `payment.succeeded`;
+- `calendarService`: Google/Яндекс-интеграции, AES-GCM шифрование токенов;
+- `adminService`: блокировка пользователей, CSV imports и Kafka audit log;
+- React web-приложение с адаптивным интерфейсом;
+- отдельная PostgreSQL БД и Flyway-миграции для каждого сервиса;
+- transactional outbox для критичных Kafka producers.
 
 ## Быстрый запуск
 
@@ -45,13 +50,22 @@ gradlew.bat clean test bootJar
 docker compose up --build
 ```
 
-Gateway: `http://localhost:6767`. Swagger user service:
-`http://localhost:6701/swagger-ui.html`; group service:
-`http://localhost:6702/swagger-ui.html`; gift service:
-`http://localhost:6703/swagger-ui.html`; subscription service:
-`http://localhost:6704/swagger-ui.html`; notification service:
-`http://localhost:6705/swagger-ui.html`; chat service:
-`http://localhost:6706/swagger-ui.html`.
+Web UI: `http://localhost:5173`. Gateway: `http://localhost:6767`.
+
+| Сервис | Порт | PostgreSQL host port |
+|---|---:|---:|
+| userService | 6701 | 5334 |
+| groupService | 6702 | 5336 |
+| giftService | 6703 | 5337 |
+| subscriptionService | 6704 | 5338 |
+| notificationService | 6705 | 5339 |
+| chatService | 6706 | 5340 |
+| fundraiserService | 6707 | 5341 |
+| mockBankService | 6708 | 5342 |
+| calendarService | 6709 | 5343 |
+| adminService | 6710 | 5344 |
+
+Swagger каждого сервиса: `http://localhost:<порт>/swagger-ui.html`.
 
 ## Примеры
 
@@ -70,3 +84,12 @@ Content-Type: application/json
 ```
 
 Все защищённые запросы используют `Authorization: Bearer <token>`.
+
+## Проверка
+
+```bash
+gradlew.bat clean test bootJar
+npm.cmd --prefix webApp ci
+npm.cmd --prefix webApp run build
+docker compose config --quiet
+```

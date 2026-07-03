@@ -1,4 +1,4 @@
-# API первого вертикального среза
+# API Birthday Celebration System
 
 Внешний base URL: `http://localhost:6767`.
 
@@ -34,6 +34,22 @@
 | GET | `/api/v1/chats/me` | JWT |
 | GET | `/api/v1/chats/{roomId}/messages` | JWT, участник |
 | POST | `/api/v1/chats/{roomId}/messages` | JWT, участник |
+| POST | `/api/v1/fundraisers` | JWT, не для себя |
+| POST | `/api/v1/fundraisers/{id}/activate` | JWT, владелец |
+| POST | `/api/v1/fundraisers/{id}/participants` | JWT, не именинник |
+| GET | `/api/v1/fundraisers/{id}` | JWT, не именинник |
+| GET | `/api/v1/fundraisers/{id}/participants` | JWT, не именинник |
+| GET | `/api/v1/mock-bank/collections/{fundraiserId}` | JWT |
+| POST | `/api/v1/mock-bank/collections/{fundraiserId}/payments` | JWT |
+| POST | `/api/v1/calendar/integrations` | JWT |
+| GET | `/api/v1/calendar/integrations` | JWT |
+| POST | `/api/v1/calendar/events` | JWT |
+| GET | `/api/v1/calendar/events` | JWT |
+| PUT | `/api/v1/calendar/events/{id}` | JWT, владелец |
+| DELETE | `/api/v1/calendar/events/{id}` | JWT, владелец |
+| PATCH | `/api/v1/admin/users/{id}/block` | JWT, ADMIN |
+| GET | `/api/v1/admin/audit-logs` | JWT, ADMIN |
+| POST | `/api/v1/admin/imports` | JWT, ADMIN |
 
 WebSocket endpoint: `/ws/notifications`; персональная очередь:
 `/user/queue/notifications`.
@@ -41,8 +57,8 @@ WebSocket endpoint: `/ws/notifications`; персональная очередь
 Chat WebSocket: `/ws/chats`, topic `/topic/chats/{roomId}`,
 send destination `/app/chats/{roomId}/send`.
 
-Internal endpoint `GET /internal/users/{userId}` не маршрутизируется через
-Gateway и требует `X-Internal-Api-Key`.
+Internal endpoints пользователей, групп, подарков и mock bank не
+маршрутизируются через Gateway и требуют `X-Internal-Api-Key`.
 
 `groupService` доверяет `X-User-*` только при наличии внутреннего
 `X-Gateway-Secret`. Gateway удаляет клиентские identity headers и формирует
