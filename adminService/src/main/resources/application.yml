@@ -1,0 +1,33 @@
+server:
+  port: 6710
+spring:
+  application:
+    name: admin-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5344/admin_db}
+    username: ${SPRING_DATASOURCE_USERNAME:birthday}
+    password: ${SPRING_DATASOURCE_PASSWORD:birthday}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: admin-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+clients:
+  user-service:
+    url: ${USER_SERVICE_URL:http://localhost:6701}
+  internal-api-key: ${INTERNAL_API_KEY:local-development-internal-key}
+security:
+  gateway-secret: ${GATEWAY_INTERNAL_SECRET:local-development-gateway-secret}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

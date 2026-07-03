@@ -143,6 +143,22 @@ services:
       timeout: 3s
       retries: 10
 
+  postgres-admin:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: admin_db
+      POSTGRES_USER: ${POSTGRES_USER:-birthday}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+    ports:
+      - "5344:5432"
+    volumes:
+      - admin-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-birthday} -d admin_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   kafka:
     image: apache/kafka:3.9.0
     environment:
@@ -404,6 +420,34 @@ services:
       retries: 15
       start_period: 10s
 
+  admin-service:
+    build:
+      context: .
+      dockerfile: adminService/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-admin:5432/admin_db
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-birthday}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+      USER_SERVICE_URL: http://user-service:6701
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-local-development-internal-key}
+      GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "6710:6710"
+    depends_on:
+      postgres-admin:
+        condition: service_healthy
+      user-service:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6710'"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 10s
+
   api-gateway:
     build:
       context: .
@@ -420,6 +464,7 @@ services:
       MOCK_BANK_SERVICE_URL: http://mock-bank-service:6708
       FUNDRAISER_SERVICE_URL: http://fundraiser-service:6707
       CALENDAR_SERVICE_URL: http://calendar-service:6709
+      ADMIN_SERVICE_URL: http://admin-service:6710
       JWT_SECRET: ${JWT_SECRET:-change-this-development-secret-to-at-least-32-bytes}
       GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
     ports:
@@ -443,6 +488,8 @@ services:
         condition: service_healthy
       calendar-service:
         condition: service_healthy
+      admin-service:
+        condition: service_healthy
 
 volumes:
   user-db-data:
@@ -454,3 +501,4 @@ volumes:
   mock-bank-db-data:
   fundraiser-db-data:
   calendar-db-data:
+  admin-db-data:

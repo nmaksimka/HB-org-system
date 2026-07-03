@@ -15,4 +15,5 @@ public interface UserService {
     UserShortResponse getInternal(UUID id);
     Page<PublicUserResponse> list(String search, Pageable pageable);
     UserResponse updateProfile(UUID currentUserId, UpdateProfileRequest request);
+    void block(UUID id);
 }

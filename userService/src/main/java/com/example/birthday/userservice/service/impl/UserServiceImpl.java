@@ -71,6 +71,14 @@ public class UserServiceImpl implements UserService {
         return mapper.toResponse(user);
     }
 
+    @Override
+    @Transactional
+    public void block(UUID id) {
+        User user = users.findById(id)
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "User not found"));
+        user.setStatus(UserStatus.BLOCKED);
+    }
+
     private User requireActive(UUID id) {
         User user = users.findWithProfileById(id)
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "User not found"));

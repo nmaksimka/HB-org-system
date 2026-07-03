@@ -19,4 +19,10 @@ public class InternalUserController {
     public UserShortResponse get(@PathVariable UUID userId) {
         return userService.getInternal(userId);
     }
+
+    @PostMapping("/{userId}/block")
+    @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
+    public void block(@PathVariable UUID userId) {
+        userService.block(userId);
+    }
 }
