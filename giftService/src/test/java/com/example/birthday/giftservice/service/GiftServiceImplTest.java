@@ -11,6 +11,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mapstruct.factory.Mappers;
 
 import java.util.*;
 
@@ -28,7 +29,7 @@ class GiftServiceImplTest {
     @BeforeEach
     void setUp() {
         service = new GiftServiceImpl(
-                gifts, reservations, users, new GiftMapper(), outbox);
+                gifts, reservations, users, Mappers.getMapper(GiftMapper.class), outbox);
     }
 
     @Test

@@ -1,10 +1,12 @@
 package com.example.birthday.chatservice.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 import java.time.Instant;
 import java.util.UUID;
 
 @Entity @Table(name = "chat_rooms")
+@Getter @Setter @NoArgsConstructor
 public class ChatRoom {
     @Id @GeneratedValue(strategy = GenerationType.UUID) private UUID id;
     @Enumerated(EnumType.STRING) @Column(nullable=false,length=30) private ChatRoomType type;
@@ -19,9 +21,4 @@ public class ChatRoom {
     @Column(name="deleted_at") private Instant deletedAt;
     @PrePersist void create(){createdAt=updatedAt=Instant.now();}
     @PreUpdate void update(){updatedAt=Instant.now();}
-    public UUID getId(){return id;} public ChatRoomType getType(){return type;}
-    public void setType(ChatRoomType v){type=v;} public String getTitle(){return title;}
-    public void setTitle(String v){title=v;} public UUID getTargetUserId(){return targetUserId;}
-    public void setTargetUserId(UUID v){targetUserId=v;} public UUID getCreatedByUserId(){return createdByUserId;}
-    public void setCreatedByUserId(UUID v){createdByUserId=v;} public Instant getCreatedAt(){return createdAt;}
 }

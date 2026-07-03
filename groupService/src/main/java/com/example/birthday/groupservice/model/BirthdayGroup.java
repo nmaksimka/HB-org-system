@@ -1,12 +1,16 @@
 package com.example.birthday.groupservice.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(name = "groups")
+@Getter
+@Setter
+@NoArgsConstructor
 public class BirthdayGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -33,17 +37,4 @@ public class BirthdayGroup {
     @PreUpdate
     void update() { updatedAt = Instant.now(); }
 
-    public UUID getId() { return id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-    public UUID getOwnerId() { return ownerId; }
-    public void setOwnerId(UUID ownerId) { this.ownerId = ownerId; }
-    public String getAvatarUrl() { return avatarUrl; }
-    public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
-    public boolean isPublicGroup() { return publicGroup; }
-    public void setPublicGroup(boolean publicGroup) { this.publicGroup = publicGroup; }
-    public Instant getCreatedAt() { return createdAt; }
-    public Instant getDeletedAt() { return deletedAt; }
 }

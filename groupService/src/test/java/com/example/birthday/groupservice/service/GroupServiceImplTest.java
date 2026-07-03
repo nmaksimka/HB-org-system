@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mapstruct.factory.Mappers;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -30,7 +31,8 @@ class GroupServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        service = new GroupServiceImpl(groups, members, users, new GroupMapper());
+        service = new GroupServiceImpl(
+                groups, members, users, Mappers.getMapper(GroupMapper.class));
     }
 
     @Test

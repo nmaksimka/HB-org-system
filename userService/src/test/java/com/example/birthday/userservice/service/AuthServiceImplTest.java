@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mapstruct.factory.Mappers;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
@@ -28,7 +29,8 @@ class AuthServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        service = new AuthServiceImpl(users, passwordEncoder, jwtService, new UserMapper());
+        service = new AuthServiceImpl(
+                users, passwordEncoder, jwtService, Mappers.getMapper(UserMapper.class));
     }
 
     @Test

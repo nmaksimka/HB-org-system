@@ -1,12 +1,16 @@
 package com.example.birthday.subscriptionservice.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(name = "birthday_subscriptions")
+@Getter
+@Setter
+@NoArgsConstructor
 public class BirthdaySubscription {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -31,18 +35,4 @@ public class BirthdaySubscription {
     @PrePersist void create() { createdAt = updatedAt = Instant.now(); }
     @PreUpdate void update() { updatedAt = Instant.now(); }
 
-    public UUID getId() { return id; }
-    public UUID getSubscriberId() { return subscriberId; }
-    public void setSubscriberId(UUID value) { subscriberId = value; }
-    public SubscriptionType getType() { return type; }
-    public void setType(SubscriptionType value) { type = value; }
-    public UUID getTargetUserId() { return targetUserId; }
-    public void setTargetUserId(UUID value) { targetUserId = value; }
-    public UUID getTargetGroupId() { return targetGroupId; }
-    public void setTargetGroupId(UUID value) { targetGroupId = value; }
-    public int getDaysBefore() { return daysBefore; }
-    public void setDaysBefore(int value) { daysBefore = value; }
-    public boolean isActive() { return active; }
-    public void setActive(boolean value) { active = value; }
-    public Instant getCreatedAt() { return createdAt; }
 }

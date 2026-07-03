@@ -8,6 +8,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mapstruct.factory.Mappers;
 
 import java.util.*;
 
@@ -23,7 +24,7 @@ class NotificationServiceImplTest {
     @BeforeEach
     void setUp() {
         service = new NotificationServiceImpl(
-                notifications, new NotificationMapper(), delivery);
+                notifications, Mappers.getMapper(NotificationMapper.class), delivery);
     }
 
     @Test

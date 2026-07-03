@@ -1,12 +1,16 @@
 package com.example.birthday.userservice.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
 @Table(name = "user_profiles")
+@Getter
+@Setter
+@NoArgsConstructor
 public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -37,21 +41,4 @@ public class UserProfile {
     @Column(name = "is_gift_list_visible", nullable = false)
     private boolean giftListVisible = true;
 
-    public UUID getId() { return id; }
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
-    public LocalDate getBirthDate() { return birthDate; }
-    public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
-    public String getAvatarUrl() { return avatarUrl; }
-    public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
-    public String getBio() { return bio; }
-    public void setBio(String bio) { this.bio = bio; }
-    public boolean isBirthDateVisible() { return birthDateVisible; }
-    public void setBirthDateVisible(boolean value) { this.birthDateVisible = value; }
-    public boolean isGiftListVisible() { return giftListVisible; }
-    public void setGiftListVisible(boolean value) { this.giftListVisible = value; }
 }

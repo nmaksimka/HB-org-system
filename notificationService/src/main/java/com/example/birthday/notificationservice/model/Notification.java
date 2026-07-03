@@ -1,12 +1,16 @@
 package com.example.birthday.notificationservice.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(name = "notifications")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Notification {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -26,23 +30,6 @@ public class Notification {
     @Column(name = "created_at", nullable = false, updatable = false) private Instant createdAt;
 
     @PrePersist void create() { createdAt = Instant.now(); }
-    public UUID getId() { return id; }
-    public UUID getUserId() { return userId; }
-    public void setUserId(UUID value) { userId = value; }
-    public NotificationType getType() { return type; }
-    public void setType(NotificationType value) { type = value; }
-    public NotificationStatus getStatus() { return status; }
-    public String getTitle() { return title; }
-    public void setTitle(String value) { title = value; }
-    public String getMessage() { return message; }
-    public void setMessage(String value) { message = value; }
-    public String getRelatedEntityType() { return relatedEntityType; }
-    public void setRelatedEntityType(String value) { relatedEntityType = value; }
-    public UUID getRelatedEntityId() { return relatedEntityId; }
-    public void setRelatedEntityId(UUID value) { relatedEntityId = value; }
-    public void setSourceEventId(UUID value) { sourceEventId = value; }
-    public Instant getSentAt() { return sentAt; }
-    public Instant getCreatedAt() { return createdAt; }
     public void markSent() { sentAt = Instant.now(); }
     public void markRead() { status = NotificationStatus.READ; readAt = Instant.now(); }
 }
