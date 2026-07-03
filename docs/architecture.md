@@ -32,7 +32,7 @@
 
 ```text
 Client
-  -> apiGateway :1488
+  -> apiGateway :6969
       -> userService :6700
           -> user_db :5432 (host :5334)
       -> groupService :6701
@@ -67,7 +67,7 @@ Client
           -> admin_db :5432 (host :5344)
           <- Kafka domain events
 
-Browser -> webApp :5173 -> apiGateway :6767
+Browser -> webApp :5173 -> apiGateway :6969
 ```
 
 Gateway:

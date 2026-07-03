@@ -1,6 +1,6 @@
 # API Birthday Celebration System
 
-Внешний base URL: `http://localhost:1488`.
+Внешний base URL: `http://localhost:6969`.
 
 | Метод | Endpoint | Доступ |
 |---|---|---|

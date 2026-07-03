@@ -50,32 +50,22 @@ gradlew.bat clean test bootJar
 docker compose up --build
 ```
 
-<<<<<<< HEAD
-Gateway: `http://localhost:1488`. Swagger user service:
-`http://localhost:6700/swagger-ui.html`; group service:
-`http://localhost:6701/swagger-ui.html`; gift service:
-`http://localhost:6702/swagger-ui.html`; subscription service:
-`http://localhost:6703/swagger-ui.html`; notification service:
-`http://localhost:6704/swagger-ui.html`; chat service:
-`http://localhost:6705/swagger-ui.html`.
-=======
-Web UI: `http://localhost:5173`. Gateway: `http://localhost:6767`.
+Web UI: `http://localhost:5173`. Gateway: `http://localhost:6969`.
 
 | Сервис | Порт | PostgreSQL host port |
 |---|---:|---:|
-| userService | 6701 | 5334 |
-| groupService | 6702 | 5336 |
-| giftService | 6703 | 5337 |
-| subscriptionService | 6704 | 5338 |
-| notificationService | 6705 | 5339 |
-| chatService | 6706 | 5340 |
-| fundraiserService | 6707 | 5341 |
-| mockBankService | 6708 | 5342 |
-| calendarService | 6709 | 5343 |
-| adminService | 6710 | 5344 |
+| userService | 6700 | 5334 |
+| groupService | 6701 | 5336 |
+| giftService | 6702 | 5337 |
+| subscriptionService | 6703 | 5338 |
+| notificationService | 6704 | 5339 |
+| chatService | 6705 | 5340 |
+| fundraiserService | 6706 | 5341 |
+| mockBankService | 6707 | 5342 |
+| calendarService | 6708 | 5343 |
+| adminService | 6709 | 5344 |
 
 Swagger каждого сервиса: `http://localhost:<порт>/swagger-ui.html`.
->>>>>>> dfed975d8786461dcbd44500f4cc16b0ef7f6ef0
 
 ## Примеры
 

@@ -36,7 +36,7 @@ endpoint, Docker Compose не сломан, документация обнов�
 
 ## Порты сервисов
 
-- API Gateway: `1488`.
+- API Gateway: `6969`.
 - userService: `6700`.
 - groupService: `6701`.
 - giftService: `6702`.

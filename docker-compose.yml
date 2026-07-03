@@ -468,17 +468,13 @@ services:
       JWT_SECRET: ${JWT_SECRET:-change-this-development-secret-to-at-least-32-bytes}
       GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
     ports:
-<<<<<<< HEAD
-      - "1488:1488"
-=======
-      - "6767:6767"
+      - "6969:6969"
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6767'"]
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6969'"]
       interval: 5s
       timeout: 3s
       retries: 15
       start_period: 10s
->>>>>>> dfed975d8786461dcbd44500f4cc16b0ef7f6ef0
     depends_on:
       user-service:
         condition: service_healthy
