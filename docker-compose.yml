@@ -111,6 +111,22 @@ services:
       timeout: 3s
       retries: 10
 
+  postgres-fundraiser:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: fundraiser_db
+      POSTGRES_USER: ${POSTGRES_USER:-birthday}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+    ports:
+      - "5341:5432"
+    volumes:
+      - fundraiser-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-birthday} -d fundraiser_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   kafka:
     image: apache/kafka:3.9.0
     environment:
@@ -313,6 +329,40 @@ services:
       retries: 15
       start_period: 10s
 
+  fundraiser-service:
+    build:
+      context: .
+      dockerfile: fundraiserService/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-fundraiser:5432/fundraiser_db
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-birthday}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+      USER_SERVICE_URL: http://user-service:6701
+      GIFT_SERVICE_URL: http://gift-service:6703
+      MOCK_BANK_SERVICE_URL: http://mock-bank-service:6708
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-local-development-internal-key}
+      GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "6707:6707"
+    depends_on:
+      postgres-fundraiser:
+        condition: service_healthy
+      user-service:
+        condition: service_healthy
+      gift-service:
+        condition: service_healthy
+      mock-bank-service:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6707'"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 10s
+
   api-gateway:
     build:
       context: .
@@ -327,6 +377,7 @@ services:
       CHAT_SERVICE_URL: http://chat-service:6706
       CHAT_WS_URL: ws://chat-service:6706
       MOCK_BANK_SERVICE_URL: http://mock-bank-service:6708
+      FUNDRAISER_SERVICE_URL: http://fundraiser-service:6707
       JWT_SECRET: ${JWT_SECRET:-change-this-development-secret-to-at-least-32-bytes}
       GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
     ports:
@@ -346,6 +397,8 @@ services:
         condition: service_healthy
       mock-bank-service:
         condition: service_healthy
+      fundraiser-service:
+        condition: service_healthy
 
 volumes:
   user-db-data:
@@ -355,3 +408,4 @@ volumes:
   notification-db-data:
   chat-db-data:
   mock-bank-db-data:
+  fundraiser-db-data:

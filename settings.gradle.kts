@@ -24,4 +24,5 @@ include(
     "notificationService",
     "chatService",
     "mockBankService",
+    "fundraiserService",
 )

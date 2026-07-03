@@ -43,6 +43,10 @@ spring:
           uri: ${MOCK_BANK_SERVICE_URL:http://localhost:6708}
           predicates:
             - Path=/api/v1/mock-bank/**
+        - id: fundraiser-service
+          uri: ${FUNDRAISER_SERVICE_URL:http://localhost:6707}
+          predicates:
+            - Path=/api/v1/fundraisers/**
       globalcors:
         cors-configurations:
           '[/**]':
