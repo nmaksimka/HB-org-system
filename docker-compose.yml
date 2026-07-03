@@ -63,6 +63,22 @@ services:
       timeout: 3s
       retries: 10
 
+  postgres-notification:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: notification_db
+      POSTGRES_USER: ${POSTGRES_USER:-birthday}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+    ports:
+      - "5339:5432"
+    volumes:
+      - notification-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-birthday} -d notification_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   kafka:
     image: apache/kafka:3.9.0
     environment:
@@ -186,6 +202,31 @@ services:
       retries: 15
       start_period: 10s
 
+  notification-service:
+    build:
+      context: .
+      dockerfile: notificationService/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-notification:5432/notification_db
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-birthday}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+      GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
+      JWT_SECRET: ${JWT_SECRET:-change-this-development-secret-to-at-least-32-bytes}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "6705:6705"
+    depends_on:
+      postgres-notification:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6705'"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 10s
+
   api-gateway:
     build:
       context: .
@@ -195,6 +236,8 @@ services:
       GROUP_SERVICE_URL: http://group-service:6702
       GIFT_SERVICE_URL: http://gift-service:6703
       SUBSCRIPTION_SERVICE_URL: http://subscription-service:6704
+      NOTIFICATION_SERVICE_URL: http://notification-service:6705
+      NOTIFICATION_WS_URL: ws://notification-service:6705
       JWT_SECRET: ${JWT_SECRET:-change-this-development-secret-to-at-least-32-bytes}
       GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
     ports:
@@ -208,9 +251,12 @@ services:
         condition: service_healthy
       subscription-service:
         condition: service_healthy
+      notification-service:
+        condition: service_healthy
 
 volumes:
   user-db-data:
   group-db-data:
   gift-db-data:
   subscription-db-data:
+  notification-db-data:

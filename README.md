@@ -24,8 +24,11 @@
 - `subscriptionService`: подписки на пользователей и группы;
 - запрет подписки на себя и активных дублей;
 - отдельная `subscription_db` и Kafka outbox.
+- `notificationService`: Kafka consumers, read/unread API и WebSocket;
+- идемпотентность по `sourceEventId` и отдельная `notification_db`;
+- scheduler пользовательских birthday reminders.
 
-Следующие вертикальные срезы: `notificationService`, `chatService`.
+Следующий вертикальный срез: `chatService`.
 
 ## Быстрый запуск
 
@@ -39,7 +42,8 @@ Gateway: `http://localhost:6767`. Swagger user service:
 `http://localhost:6701/swagger-ui.html`; group service:
 `http://localhost:6702/swagger-ui.html`; gift service:
 `http://localhost:6703/swagger-ui.html`; subscription service:
-`http://localhost:6704/swagger-ui.html`.
+`http://localhost:6704/swagger-ui.html`; notification service:
+`http://localhost:6705/swagger-ui.html`.
 
 ## Примеры
 

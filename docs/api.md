@@ -26,6 +26,12 @@
 | POST | `/api/v1/subscriptions/groups/{groupId}` | JWT |
 | GET | `/api/v1/subscriptions/me` | JWT |
 | DELETE | `/api/v1/subscriptions/{subscriptionId}` | JWT, владелец |
+| GET | `/api/v1/notifications` | JWT |
+| PATCH | `/api/v1/notifications/{notificationId}/read` | JWT, владелец |
+| PATCH | `/api/v1/notifications/read-all` | JWT |
+
+WebSocket endpoint: `/ws/notifications`; персональная очередь:
+`/user/queue/notifications`.
 
 Internal endpoint `GET /internal/users/{userId}` не маршрутизируется через
 Gateway и требует `X-Internal-Api-Key`.

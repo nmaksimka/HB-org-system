@@ -46,6 +46,10 @@ Client
           -> subscription_db :5432 (host :5338)
           -> userService/groupService internal API
           -> Kafka via transactional outbox
+      -> notificationService :6705
+          -> notification_db :5432 (host :5339)
+          <- Kafka events
+          -> /user/queue/notifications
 ```
 
 Gateway:
@@ -88,6 +92,13 @@ Gateway:
 - проверяет пользователей и группы через защищённые internal API;
 - запрещает подписку на себя и дубли активных подписок;
 - публикует `SubscriptionCreatedEvent` и `SubscriptionDeletedEvent`.
+
+`notificationService`:
+
+- идемпотентно обрабатывает Kafka events по `eventId`;
+- сначала сохраняет уведомление, затем отправляет его через WebSocket;
+- предоставляет read/unread API только владельцу уведомлений;
+- хранит журнал попыток WebSocket-доставки.
 
 ## Решения по исходной схеме
 

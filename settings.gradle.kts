@@ -21,4 +21,5 @@ include(
     "groupService",
     "giftService",
     "subscriptionService",
+    "notificationService",
 )

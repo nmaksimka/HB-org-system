@@ -23,6 +23,14 @@ spring:
           uri: ${SUBSCRIPTION_SERVICE_URL:http://localhost:6704}
           predicates:
             - Path=/api/v1/subscriptions/**
+        - id: notification-websocket
+          uri: ${NOTIFICATION_WS_URL:ws://localhost:6705}
+          predicates:
+            - Path=/ws/notifications/**
+        - id: notification-service
+          uri: ${NOTIFICATION_SERVICE_URL:http://localhost:6705}
+          predicates:
+            - Path=/api/v1/notifications/**
       globalcors:
         cors-configurations:
           '[/**]':
