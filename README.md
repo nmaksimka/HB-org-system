@@ -18,9 +18,12 @@
 - отдельные `user_db` и `group_db`;
 - Docker healthchecks и упорядоченный запуск сервисов;
 - unit tests для auth и групповых бизнес-правил.
+- `giftService`: wishlist CRUD, видимость, бронирование и Kafka outbox;
+- запрет редактирования чужого и бронирования собственного подарка;
+- отдельная `gift_db`.
 
-Следующие вертикальные срезы: `giftService`,
-`subscriptionService`, `notificationService`, `chatService`.
+Следующие вертикальные срезы: `subscriptionService`,
+`notificationService`, `chatService`.
 
 ## Быстрый запуск
 
@@ -32,7 +35,8 @@ docker compose up --build
 
 Gateway: `http://localhost:6767`. Swagger user service:
 `http://localhost:6701/swagger-ui.html`; group service:
-`http://localhost:6702/swagger-ui.html`.
+`http://localhost:6702/swagger-ui.html`; gift service:
+`http://localhost:6703/swagger-ui.html`.
 
 ## Примеры
 

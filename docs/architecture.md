@@ -38,6 +38,10 @@ Client
       -> groupService :6702
           -> group_db :5432 (host :5336)
           -> userService internal API
+      -> giftService :6703
+          -> gift_db :5432 (host :5337)
+          -> userService internal API
+          -> Kafka via transactional outbox
 ```
 
 Gateway:
@@ -65,6 +69,14 @@ Gateway:
 - при создании назначает создателю роль `OWNER`;
 - запрещает повторное вступление и выход владельца;
 - принимает identity headers только с внутренним секретом Gateway.
+
+`giftService`:
+
+- владеет `gift_wishes`, `gift_reservations` и `outbox_events`;
+- не создаёт FK на пользователей;
+- скрывает личность бронирующего из обычного `GiftResponse`;
+- блокирует строку подарка при бронировании и допускает только одну бронь;
+- сохраняет бизнес-изменение и Kafka event в одной транзакции.
 
 ## Решения по исходной схеме
 

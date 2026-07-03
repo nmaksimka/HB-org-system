@@ -19,4 +19,5 @@ include(
     "apiGateway",
     "userService",
     "groupService",
+    "giftService",
 )

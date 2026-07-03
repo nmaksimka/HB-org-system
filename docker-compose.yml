@@ -31,6 +31,22 @@ services:
       timeout: 3s
       retries: 10
 
+  postgres-gift:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: gift_db
+      POSTGRES_USER: ${POSTGRES_USER:-birthday}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+    ports:
+      - "5337:5432"
+    volumes:
+      - gift-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-birthday} -d gift_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   kafka:
     image: apache/kafka:3.9.0
     environment:
@@ -95,6 +111,34 @@ services:
       retries: 15
       start_period: 10s
 
+  gift-service:
+    build:
+      context: .
+      dockerfile: giftService/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-gift:5432/gift_db
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-birthday}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+      USER_SERVICE_URL: http://user-service:6701
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-local-development-internal-key}
+      GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "6703:6703"
+    depends_on:
+      postgres-gift:
+        condition: service_healthy
+      user-service:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6703'"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 10s
+
   api-gateway:
     build:
       context: .
@@ -102,6 +146,7 @@ services:
     environment:
       USER_SERVICE_URL: http://user-service:6701
       GROUP_SERVICE_URL: http://group-service:6702
+      GIFT_SERVICE_URL: http://gift-service:6703
       JWT_SECRET: ${JWT_SECRET:-change-this-development-secret-to-at-least-32-bytes}
       GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
     ports:
@@ -111,7 +156,10 @@ services:
         condition: service_healthy
       group-service:
         condition: service_healthy
+      gift-service:
+        condition: service_healthy
 
 volumes:
   user-db-data:
   group-db-data:
+  gift-db-data:

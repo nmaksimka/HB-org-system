@@ -7,6 +7,10 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: gift-service
+          uri: ${GIFT_SERVICE_URL:http://localhost:6703}
+          predicates:
+            - Path=/api/v1/gifts/**,/api/v1/users/*/gifts
         - id: user-service
           uri: ${USER_SERVICE_URL:http://localhost:6701}
           predicates:
