@@ -23,6 +23,7 @@ public class GatewayAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return request.getRequestURI().equals("/actuator/health")
+                || request.getRequestURI().startsWith("/internal/")
                 || request.getRequestURI().startsWith("/v3/api-docs")
                 || request.getRequestURI().startsWith("/swagger-ui");
     }

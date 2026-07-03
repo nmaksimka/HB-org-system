@@ -21,9 +21,11 @@
 - `giftService`: wishlist CRUD, видимость, бронирование и Kafka outbox;
 - запрет редактирования чужого и бронирования собственного подарка;
 - отдельная `gift_db`.
+- `subscriptionService`: подписки на пользователей и группы;
+- запрет подписки на себя и активных дублей;
+- отдельная `subscription_db` и Kafka outbox.
 
-Следующие вертикальные срезы: `subscriptionService`,
-`notificationService`, `chatService`.
+Следующие вертикальные срезы: `notificationService`, `chatService`.
 
 ## Быстрый запуск
 
@@ -36,7 +38,8 @@ docker compose up --build
 Gateway: `http://localhost:6767`. Swagger user service:
 `http://localhost:6701/swagger-ui.html`; group service:
 `http://localhost:6702/swagger-ui.html`; gift service:
-`http://localhost:6703/swagger-ui.html`.
+`http://localhost:6703/swagger-ui.html`; subscription service:
+`http://localhost:6704/swagger-ui.html`.
 
 ## Примеры
 

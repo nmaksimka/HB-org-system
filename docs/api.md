@@ -22,6 +22,10 @@
 | PUT | `/api/v1/gifts/{giftId}` | JWT, владелец |
 | DELETE | `/api/v1/gifts/{giftId}` | JWT, владелец |
 | POST | `/api/v1/gifts/{giftId}/reserve` | JWT, не владелец |
+| POST | `/api/v1/subscriptions/users/{userId}` | JWT |
+| POST | `/api/v1/subscriptions/groups/{groupId}` | JWT |
+| GET | `/api/v1/subscriptions/me` | JWT |
+| DELETE | `/api/v1/subscriptions/{subscriptionId}` | JWT, владелец |
 
 Internal endpoint `GET /internal/users/{userId}` не маршрутизируется через
 Gateway и требует `X-Internal-Api-Key`.

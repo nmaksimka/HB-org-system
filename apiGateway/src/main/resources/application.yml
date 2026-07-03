@@ -19,6 +19,10 @@ spring:
           uri: ${GROUP_SERVICE_URL:http://localhost:6702}
           predicates:
             - Path=/api/v1/groups/**
+        - id: subscription-service
+          uri: ${SUBSCRIPTION_SERVICE_URL:http://localhost:6704}
+          predicates:
+            - Path=/api/v1/subscriptions/**
       globalcors:
         cors-configurations:
           '[/**]':

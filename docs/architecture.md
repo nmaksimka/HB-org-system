@@ -42,6 +42,10 @@ Client
           -> gift_db :5432 (host :5337)
           -> userService internal API
           -> Kafka via transactional outbox
+      -> subscriptionService :6704
+          -> subscription_db :5432 (host :5338)
+          -> userService/groupService internal API
+          -> Kafka via transactional outbox
 ```
 
 Gateway:
@@ -77,6 +81,13 @@ Gateway:
 - скрывает личность бронирующего из обычного `GiftResponse`;
 - блокирует строку подарка при бронировании и допускает только одну бронь;
 - сохраняет бизнес-изменение и Kafka event в одной транзакции.
+
+`subscriptionService`:
+
+- владеет `birthday_subscriptions` и собственным outbox;
+- проверяет пользователей и группы через защищённые internal API;
+- запрещает подписку на себя и дубли активных подписок;
+- публикует `SubscriptionCreatedEvent` и `SubscriptionDeletedEvent`.
 
 ## Решения по исходной схеме
 

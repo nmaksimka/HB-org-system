@@ -22,6 +22,7 @@ clients:
 
 security:
   gateway-secret: ${GATEWAY_INTERNAL_SECRET:local-development-gateway-secret}
+  internal-api-key: ${INTERNAL_API_KEY:local-development-internal-key}
 
 management:
   endpoints:
