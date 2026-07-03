@@ -95,6 +95,22 @@ services:
       timeout: 3s
       retries: 10
 
+  postgres-mock-bank:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: mock_bank_db
+      POSTGRES_USER: ${POSTGRES_USER:-birthday}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+    ports:
+      - "5342:5432"
+    volumes:
+      - mock-bank-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-birthday} -d mock_bank_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   kafka:
     image: apache/kafka:3.9.0
     environment:
@@ -272,6 +288,31 @@ services:
       retries: 15
       start_period: 10s
 
+  mock-bank-service:
+    build:
+      context: .
+      dockerfile: mockBankService/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-mock-bank:5432/mock_bank_db
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-birthday}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-local-development-internal-key}
+      GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "6708:6708"
+    depends_on:
+      postgres-mock-bank:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6708'"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 10s
+
   api-gateway:
     build:
       context: .
@@ -285,6 +326,7 @@ services:
       NOTIFICATION_WS_URL: ws://notification-service:6705
       CHAT_SERVICE_URL: http://chat-service:6706
       CHAT_WS_URL: ws://chat-service:6706
+      MOCK_BANK_SERVICE_URL: http://mock-bank-service:6708
       JWT_SECRET: ${JWT_SECRET:-change-this-development-secret-to-at-least-32-bytes}
       GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
     ports:
@@ -302,6 +344,8 @@ services:
         condition: service_healthy
       chat-service:
         condition: service_healthy
+      mock-bank-service:
+        condition: service_healthy
 
 volumes:
   user-db-data:
@@ -310,3 +354,4 @@ volumes:
   subscription-db-data:
   notification-db-data:
   chat-db-data:
+  mock-bank-db-data:
