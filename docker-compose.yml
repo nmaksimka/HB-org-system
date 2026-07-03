@@ -1,0 +1,117 @@
+services:
+  postgres-user:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: ${POSTGRES_USER:-birthday}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+    ports:
+      - "5334:5432"
+    volumes:
+      - user-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-birthday} -d user_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  postgres-group:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: group_db
+      POSTGRES_USER: ${POSTGRES_USER:-birthday}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+    ports:
+      - "5336:5432"
+    volumes:
+      - group-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-birthday} -d group_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  kafka:
+    image: apache/kafka:3.9.0
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    ports:
+      - "9092:9092"
+
+  user-service:
+    build:
+      context: .
+      dockerfile: userService/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-user:5432/user_db
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-birthday}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+      JWT_SECRET: ${JWT_SECRET:-change-this-development-secret-to-at-least-32-bytes}
+      JWT_ACCESS_TOKEN_TTL: ${JWT_ACCESS_TOKEN_TTL:-3600}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-local-development-internal-key}
+    ports:
+      - "6701:6701"
+    depends_on:
+      postgres-user:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6701'"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 10s
+
+  group-service:
+    build:
+      context: .
+      dockerfile: groupService/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-group:5432/group_db
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-birthday}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+      USER_SERVICE_URL: http://user-service:6701
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-local-development-internal-key}
+      GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
+    ports:
+      - "6702:6702"
+    depends_on:
+      postgres-group:
+        condition: service_healthy
+      user-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6702'"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 10s
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: apiGateway/Dockerfile
+    environment:
+      USER_SERVICE_URL: http://user-service:6701
+      GROUP_SERVICE_URL: http://group-service:6702
+      JWT_SECRET: ${JWT_SECRET:-change-this-development-secret-to-at-least-32-bytes}
+      GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
+    ports:
+      - "6767:6767"
+    depends_on:
+      user-service:
+        condition: service_healthy
+      group-service:
+        condition: service_healthy
+
+volumes:
+  user-db-data:
+  group-db-data:

@@ -1,0 +1,30 @@
+server:
+  port: 6702
+
+spring:
+  application:
+    name: group-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5336/group_db}
+    username: ${SPRING_DATASOURCE_USERNAME:birthday}
+    password: ${SPRING_DATASOURCE_PASSWORD:birthday}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+
+clients:
+  user-service:
+    url: ${USER_SERVICE_URL:http://localhost:6701}
+    internal-api-key: ${INTERNAL_API_KEY:local-development-internal-key}
+
+security:
+  gateway-secret: ${GATEWAY_INTERNAL_SECRET:local-development-gateway-secret}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
