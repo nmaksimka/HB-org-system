@@ -25,4 +25,5 @@ include(
     "chatService",
     "mockBankService",
     "fundraiserService",
+    "calendarService",
 )

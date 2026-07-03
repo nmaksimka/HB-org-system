@@ -127,6 +127,22 @@ services:
       timeout: 3s
       retries: 10
 
+  postgres-calendar:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: calendar_db
+      POSTGRES_USER: ${POSTGRES_USER:-birthday}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+    ports:
+      - "5343:5432"
+    volumes:
+      - calendar-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-birthday} -d calendar_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   kafka:
     image: apache/kafka:3.9.0
     environment:
@@ -363,6 +379,31 @@ services:
       retries: 15
       start_period: 10s
 
+  calendar-service:
+    build:
+      context: .
+      dockerfile: calendarService/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-calendar:5432/calendar_db
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-birthday}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-birthday}
+      GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
+      CALENDAR_ENCRYPTION_KEY: ${CALENDAR_ENCRYPTION_KEY:-local-development-calendar-key-change-me}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "6709:6709"
+    depends_on:
+      postgres-calendar:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/6709'"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 10s
+
   api-gateway:
     build:
       context: .
@@ -378,6 +419,7 @@ services:
       CHAT_WS_URL: ws://chat-service:6706
       MOCK_BANK_SERVICE_URL: http://mock-bank-service:6708
       FUNDRAISER_SERVICE_URL: http://fundraiser-service:6707
+      CALENDAR_SERVICE_URL: http://calendar-service:6709
       JWT_SECRET: ${JWT_SECRET:-change-this-development-secret-to-at-least-32-bytes}
       GATEWAY_INTERNAL_SECRET: ${GATEWAY_INTERNAL_SECRET:-local-development-gateway-secret}
     ports:
@@ -399,6 +441,8 @@ services:
         condition: service_healthy
       fundraiser-service:
         condition: service_healthy
+      calendar-service:
+        condition: service_healthy
 
 volumes:
   user-db-data:
@@ -409,3 +453,4 @@ volumes:
   chat-db-data:
   mock-bank-db-data:
   fundraiser-db-data:
+  calendar-db-data:
