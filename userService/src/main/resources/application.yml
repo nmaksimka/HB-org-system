@@ -1,0 +1,36 @@
+server:
+  port: 6701
+
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5334/user_db}
+    username: ${SPRING_DATASOURCE_USERNAME:birthday}
+    password: ${SPRING_DATASOURCE_PASSWORD:birthday}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:change-this-development-secret-to-at-least-32-bytes}
+    access-token-ttl: ${JWT_ACCESS_TOKEN_TTL:3600}
+  internal-api-key: ${INTERNAL_API_KEY:local-development-internal-key}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
