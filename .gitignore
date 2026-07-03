@@ -5,3 +5,7 @@
 .env
 .codex-docx-review/
 out/
+.codex/
+codex/
+.agents/
+agents/
